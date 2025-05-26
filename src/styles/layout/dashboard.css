@@ -1,0 +1,38 @@
+/* Layout */
+.dashboard {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  margin-left: 260px;
+  padding: var(--gap);
+  transition: all 0.3s;
+}
+
+/* Notifications Row */
+.notifications-row {
+  display: flex;
+  gap: var(--gap);
+  margin-bottom: var(--gap);
+  max-height: calc(var(--gap) * 5);
+  overflow: hidden;
+}
+
+/* Charts Row */
+.charts-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--gap);
+  margin-bottom: var(--gap);
+}
+
+/* Bottom Row - Sentiment and Keywords */
+.bottom-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap);
+  margin-bottom: var(--gap);
+}

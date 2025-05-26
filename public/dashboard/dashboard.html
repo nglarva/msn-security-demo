@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard MSN</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="./dashboard.css">
+
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <i class="fas fa-shield-alt"></i>
+          <span>MSN Security</span>
+        </div>
+      </div>
+      <div class="sidebar-menu">
+        <a href="#" class="menu-item active">
+          <i class="fas fa-tachometer-alt"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="#" class="menu-item">
+          <i class="fas fa-search"></i>
+          <span>Tìm kiếm</span>
+        </a>
+        <a href="#" class="menu-item">
+          <i class="fas fa-bell"></i>
+          <span>Cảnh báo</span>
+        </a>
+        <a href="#" class="menu-item">
+          <i class="fas fa-chart-line"></i>
+          <span>Báo cáo</span>
+        </a>
+        <a href="#" class="menu-item">
+          <i class="fas fa-cog"></i>
+          <span>Cài đặt</span>
+        </a>
+      </div>
+      <div class="sidebar-footer">
+        MSN Security v1.2.5
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Header -->
+      <div class="header">
+        <h1 class="page-title">Dashboard</h1>
+        <div class="header-actions">
+          <div class="header-action" id="darkModeToggle">
+            <i class="fas fa-moon"></i>
+          </div>
+          <div class="header-action">
+            <i class="fas fa-bell"></i>
+          </div>
+          <div class="header-action">
+            <i class="fas fa-user"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notifications Row (Kết hợp Alert và Stats) -->
+      <div class="notifications-row">
+        <div class="alert-notification">
+          <div class="alert-icon"><i class="fas fa-exclamation"></i></div>
+          <div class="alert-content">
+            <div class="alert-text">
+              <div class="alert-title">Phát hiện từ khóa nhạy cảm</div>
+              <div class="alert-description">Hệ thống đã phát hiện 3 từ khóa nhạy cảm mới trong 24 giờ qua.</div>
+            </div>
+            <div class="alert-actions">
+              <button class="btn btn-primary">Xem chi tiết</button>
+              <button class="btn btn-outline">Bỏ qua</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="stats-container">
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-hashtag"></i></div>
+            <div class="stat-value">1,254</div>
+            <div class="stat-label">Từ khóa được theo dõi</div>
+            <div class="stat-trend up"><i class="fas fa-arrow-up"></i>12%</div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon" style="color: var(--success);"><i class="fas fa-check-circle"></i></div>
+            <div class="stat-value">92%</div>
+            <div class="stat-label">Tiến độ phân tích</div>
+            <div class="stat-trend up"><i class="fas fa-arrow-up"></i>3%</div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon" style="color: var(--warning);"><i class="fas fa-bell"></i></div>
+            <div class="stat-value">28</div>
+            <div class="stat-label">Cảnh báo mới</div>
+            <div class="stat-trend down"><i class="fas fa-arrow-down"></i>5%</div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon" style="color: var(--danger);"><i class="fas fa-shield-alt"></i></div>
+            <div class="stat-value">3</div>
+            <div class="stat-label">Tiêu cực/Chưa xử lý</div>
+            <div class="stat-trend down"><i class="fas fa-arrow-down"></i>2</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Row -->
+      <div class="charts-row">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Ghi nhận theo thời gian</div>
+            <div class="card-actions">
+              <div class="card-action">Ngày</div>
+              <div class="card-action">Tuần</div>
+              <div class="card-action">Tháng</div>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="activityChart"></canvas>
+          </div>
+          <div class="chart-legend">
+            <div class="legend-item">
+              <div class="legend-color" style="background: var(--primary);"></div>
+              <span>Đã xử lý</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: var(--warning);"></div>
+              <span>Đang xử lý</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: var(--danger);"></div>
+              <span>Chưa xử lý</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Trạng thái từ khóa</div>
+          </div>
+          <div class="chart-container">
+            <canvas id="keywordStatusChart"></canvas>
+          </div>
+          <div class="chart-legend">
+            <div class="legend-item">
+              <div class="legend-color" style="background: var(--success);"></div>
+              <span>An toàn</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: var(--warning);"></div>
+              <span>Cần chú ý</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: var(--danger);"></div>
+              <span>Nguy hiểm</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Row - Sentiment and Keywords -->
+      <div class="bottom-row">
+        <!-- Sentiment Analysis -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Phân tích cảm xúc người dùng</div>
+            <div class="card-actions">
+              <div class="card-action">Xuất báo cáo</div>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="sentimentChart"></canvas>
+          </div>
+          <div class="chart-legend">
+            <div class="legend-item">
+              <div class="legend-color" style="background: var(--success);"></div>
+              <span>Tích cực</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: var(--warning);"></div>
+              <span>Trung lập</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: var(--danger);"></div>
+              <span>Tiêu cực</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Keywords Table -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Từ khóa theo dõi gần đây</div>
+            <div class="card-actions">
+              <div class="card-action">Xem tất cả</div>
+            </div>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Từ khóa</th>
+                  <th>Nguồn</th>
+                  <th>Mức độ</th>
+                  <th>Trạng thái</th>
+                  <th>Cập nhật</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Nam ngư</td>
+                  <td>Facebook</td>
+                  <td>Cao</td>
+                  <td><span class="status-badge status-active">Đang theo dõi</span></td>
+                  <td>Hôm nay</td>
+                </tr>
+                <tr>
+                  <td>Chinsu</td>
+                  <td>Forum</td>
+                  <td>Cao</td>
+                  <td><span class="status-badge status-active">Đang theo dõi</span></td>
+                  <td>Hôm nay</td>
+                </tr>
+                <tr>
+                  <td>Omachi</td>
+                  <td>Twitter</td>
+                  <td>Trung bình</td>
+                  <td><span class="status-badge status-pending">Đang xử lý</span></td>
+                  <td>Hôm qua</td>
+                </tr>
+                <tr>
+                  <td>Wakeup247</td>
+                  <td>News</td>
+                  <td>Cao</td>
+                  <td><span class="status-badge status-active">Đang theo dõi</span></td>
+                  <td>Hôm qua</td>
+                </tr>
+                <tr>
+                  <td>Phuclong</td>
+                  <td>Email</td>
+                  <td>Thấp</td>
+                  <td><span class="status-badge status-blocked">Đã vô hiệu hoá</span></td>
+                  <td>3 ngày trước</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+  <script src="./dashboard.js"></script>
+</body>
+</html>
+

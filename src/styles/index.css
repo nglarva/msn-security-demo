@@ -1,0 +1,19 @@
+/* Import các file CSS thành phần */
+@import 'variables.css';
+@import 'base.css';
+
+/* Layout */
+@import 'layout/dashboard.css';
+@import 'layout/sidebar.css';
+@import 'layout/header.css';
+
+/* Components */
+@import 'components/cards.css';
+@import 'components/alerts.css';
+@import 'components/stats.css';
+@import 'components/charts.css';
+@import 'components/tables.css';
+@import 'components/buttons.css';
+
+/* Utils */
+@import 'utils/responsive.css';
