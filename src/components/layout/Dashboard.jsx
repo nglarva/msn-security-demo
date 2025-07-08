@@ -1,3 +1,6 @@
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateFilter, getToDay, getDaysAgo, getMonthsAgo, getWeeksAgo, getFirstDateOfWeekFromYearWeek} from '../../redux/actions.js';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import AlertNotification from '../alerts/AlertNotification';
@@ -10,8 +13,41 @@ import Card from '../ui/Card';
 import Button from '../ui/Button'
 import { useDarkMode } from '../../hooks/useDarkMode';
 
+
+
 const Dashboard = () => {
   const { darkMode } = useDarkMode();
+  const dispatch = useDispatch();
+  const handlePeriodChange = (period) => {
+      let startDate, endDate;
+      endDate = getToDay();
+      switch (period){
+        case 'daily':
+          startDate = getDaysAgo(7);
+          console.log("daily clicked");
+          break;
+        case 'weekly':
+          startDate = getWeeksAgo(4);
+          console.log("weekly clicked");
+          break;
+        case 'monthly':
+          startDate = getMonthsAgo(6);
+          console.log("monthly clicked");
+          break;
+        default:
+          startDate = getDaysAgo(7);
+          console.log("default")
+      }
+      dispatch(updateFilter('period', period));
+      dispatch(updateFilter('startDate', startDate));
+      dispatch(updateFilter('endDate', endDate));
+    };
+  
+    const chartPeriodActions = [
+      {label: 'Daily', onClick: () => handlePeriodChange('daily')},
+      {label: 'Weekly', onClick: () => handlePeriodChange('weekly')},
+      {label: 'Monthly', onClick: () => handlePeriodChange('monthly')},
+    ]
   
   return (
     <div className={`dashboard ${darkMode ? 'dark-mode' : ''}`}>
@@ -32,22 +68,22 @@ const Dashboard = () => {
         
         {/* Charts Row */}
         <div className="charts-row">
-          <Card title="Ghi nhận theo thời gian" actions={['Ngày', 'Tuần', 'Tháng']}>
+          <Card title="Ghi nhận theo thời gian" actions={chartPeriodActions}>
             <ActivityChart />
           </Card>
           
-          <Card title="Trạng thái từ khóa">
+          <Card title="Status all posts">
             <KeywordStatusChart />
           </Card>
         </div>
         
         {/* Bottom Row */}
         <div className="bottom-row">
-          <Card title="Phân tích cảm xúc người dùng" actions={['Xuất báo cáo']}>
+          {/* <Card title="Phân tích cảm xúc người dùng" actions={['Xuất báo cáo']}>
             <SentimentChart />
-          </Card>
+          </Card> */}
           
-          <Card title="Từ khóa theo dõi gần đây" actions={['Xem tất cả']}>
+          <Card title="Từ khóa tiêu cực gần đây">
             <KeywordsTable />
           </Card>
         </div>

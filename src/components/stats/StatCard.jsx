@@ -1,5 +1,4 @@
 import React from 'react';
-
 const StatCard = ({ icon, value, label, trend }) => {
   return (
     <div className="stat-card">

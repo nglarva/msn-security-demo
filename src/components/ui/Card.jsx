@@ -1,17 +1,32 @@
-import React from 'react';
-import '../../styles/components/cards.css'
-const Card = ({ title, children, actions }) => {
+import React from "react";
+import "../../styles/components/cards.css";
+import Button from "./Button";
+const Card = ({ title, children, actions = [] }) => {
   return (
     <div className="card">
       <div className="card-header">
         <div className="card-title">{title}</div>
-        {actions && (
+        {actions.length > 0 && (
           <div className="card-actions">
-            {actions.map((action, index) => (
-              <div key={index} className="card-action">
-                {action}
-              </div>
-            ))}
+            {actions.map((action, index) => {
+              if (typeof action === "string") {
+                return (
+                  <Button key={index} variant="primary">
+                    {action}
+                  </Button>
+                );
+              } else {
+                return (
+                  <Button
+                    key={index}
+                    variant="primary"
+                    onClick={action.onClick}
+                  >
+                    {action.label}
+                  </Button>
+                );
+              }
+            })}
           </div>
         )}
       </div>

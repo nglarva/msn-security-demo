@@ -1,12 +1,35 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback, useState } from 'react';
 import Chart from 'chart.js/auto';
+import { useSelector, useDispatch } from 'react-redux';
 import { useDarkMode } from '../../hooks/useDarkMode';
+import { fetchOverallSentiment } from '../../redux/actions.js';
+
 
 const SentimentChart = () => {
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
   const { darkMode } = useDarkMode();
+  /*
+  const dispatch = useDispatch()
+
+  const sentimentData = useSelector(state =>state.sentiment);
+
+console.log("sentimentData:", sentimentData);
   
+  const filters = useSelector(state =>state.filters)
+  console.log(filters);
+  const isLoading = useSelector(state => state.loading.overallSentiment);
+  const error = useSelector(state => state.errors.overallSentiment);
+
+  useEffect(()=>{
+    console.log("Sentiment Chart: useEffect trigger: Fetching overall sentiment with filter", filters);
+    dispatch(fetchOverallSentiment());
+    
+    
+  },[dispatch, filters])
+  console.log("SentimentData: ", sentimentData);*/
+  
+
   useEffect(() => {
     if (chartInstance.current) {
       chartInstance.current.destroy();
@@ -16,21 +39,21 @@ const SentimentChart = () => {
     
     // Dữ liệu mẫu
     const data = {
-      labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
+      labels: ["Positive","Neutral", "Negative"],
       datasets: [
         {
           label: 'Tích cực',
-          data: [65, 59, 80, 81, 56, 55, 60],
+          data: [10],
           backgroundColor: '#2ec4b6',
         },
         {
           label: 'Trung lập',
-          data: [28, 48, 40, 19, 36, 27, 30],
+          data: 70,
           backgroundColor: '#adb5bd',
         },
         {
           label: 'Tiêu cực',
-          data: [18, 28, 20, 29, 16, 17, 10],
+          data: 20,
           backgroundColor: '#e63946',
         }
       ]

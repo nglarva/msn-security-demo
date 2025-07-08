@@ -32,7 +32,7 @@
 /* Bottom Row - Sentiment and Keywords */
 .bottom-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: var(--gap);
   margin-bottom: var(--gap);
 }

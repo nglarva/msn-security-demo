@@ -1,109 +1,205 @@
-import React, { useEffect, useRef } from 'react';
-import Chart from 'chart.js/auto';
-import { useDarkMode } from '../../hooks/useDarkMode';
+import React, { useEffect, useRef } from "react";
+import Chart from "chart.js/auto";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchMentionsTrend, getFirstDateOfWeekFromYearWeek, groupByDateAndPlatform } from "../../redux/actions.js";
+//import { getPostsPerDays } from '../../services/api';
+// import LoadingIndicator from '../common/LoadingIndicator';
+// import ErrorMessage from '../common/ErrorMessage';
+import { useDarkMode } from "../../hooks/useDarkMode";
 
-const ActivityChart = () => {
+const ActivityChart = ({period}) => {
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
   const { darkMode } = useDarkMode();
   
+
+  //Lấy dữ liệu từ Redux store
+  const {trendData} = useSelector(state => state.mentions);
+  //console.log("Data mentions: ", trendData);
+  const isLoading = useSelector(state => state.loading.mentionsTrend);
+  const error = useSelector(state => state.errors.mentionsTrend);
+  const filters = useSelector(state => state.filters);
+  //console.log("Filters: ", filters);
+  const currentPeriod = useSelector(state => state.filters.period);
+  const dispatch = useDispatch();
+  //dispatch(fetchMentionsTrend());
+  
+// const refreshInterval = setInterval(() =>{
+//       console.log("Activity Chart: Loading data in 1 min");
+//       dispatch(fetchMentionsTrend());
+//     }, 60000);
+ 
+
+  useEffect(()=> {
+    console.log("Activity Chart: useEffect triggered - Fetching mentions trend with filters: ", filters);
+    dispatch(fetchMentionsTrend());
+    
+  }, [dispatch, filters]);
+
+  
+  //Sử dụng dữ liệu để phù hợp với Chart
+  const labels = trendData.map(item => {
+    let date = new Date(item.date);
+    switch (filters.period){
+      case 'daily':
+        console.log(date);
+        return `${date.getDate()}/${date.getMonth()+1}`;
+      case 'weekly':
+        const weeksOfYear = item.date;
+        date = getFirstDateOfWeekFromYearWeek(weeksOfYear.split("-")[0],weeksOfYear.split("-")[1])
+        console.log(date);
+        return `${date.getDate()}/${date.getMonth() + 1}`
+      case 'monthly':
+        return `${date.getMonth() + 1}/${date.getFullYear()}`;
+      default:
+        return item.date;
+    }
+  });
+  const chartLabels = [...new Set(labels)];
+  
+
+  console.log("Data:", trendData);
+  const dataScraped = groupByDateAndPlatform(trendData);
+  console.log("Data by group: ", dataScraped);
+  //const facebookData = trendData.filter(item => item.platform === "Facebook").map(item => item.count);
+  const facebookData = dataScraped.map(item => item.Facebook);
+  console.log("facebookData: ", facebookData);
+  
+  const tiktokData = dataScraped.map(item => item.Tiktok);
+  console.log("tiktokData: ", tiktokData);
+  const threadsData = dataScraped.map(item=>item.Threads);
+  console.log("threadsData: ", threadsData);
+  const youtubeData = dataScraped.map(item => item.Youtube);
+  console.log("youtubeData: ", youtubeData);
+    
   useEffect(() => {
     if (chartInstance.current) {
       chartInstance.current.destroy();
     }
-    
-    const ctx = chartRef.current.getContext('2d');
-    
+    if (isLoading || error || trendData.length === 0){
+      return
+    }
+    //console.log("PostsData: ", postsData.label);
+    const ctx = chartRef.current.getContext("2d");
+
     // Dữ liệu mẫu
     const data = {
-      labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
+      labels: chartLabels,
       datasets: [
         {
-          label: 'Đã xử lý',
-          data: [65, 59, 80, 81, 56, 55, 40],
-          borderColor: '#4361ee',
-          backgroundColor: 'rgba(67, 97, 238, 0.1)',
+          label: "Facebook",
+          data: facebookData,
+          borderColor: "#1321ee",
+          backgroundColor: "rgba(67, 97, 238, 0.1)",
           tension: 0.4,
-          fill: true
+          fill: true,
         },
         {
-          label: 'Đang xử lý',
-          data: [28, 48, 40, 19, 86, 27, 90],
-          borderColor: '#ff9f1c',
-          backgroundColor: 'rgba(230, 57, 70, 0.1)',
+          label: "Tiktok",
+          data: tiktokData,
+          borderColor: "#ff9f1c",
+          backgroundColor: "rgba(230, 57, 70, 0.1)",
           tension: 0.4,
-          fill: true
+          fill: true,
         },
         {
-          label: 'Chưa xử lý',
-          data: [12, 19, 3, 5, 2, 4, 7],
-          borderColor: '#e63946',
-          backgroundColor: 'rgba(230, 57, 70, 0.1)',
+          label: "Threads",
+          data: threadsData,
+          borderColor: "#e63946",
+          backgroundColor: "rgba(27, 207, 60, 0.1)",
           tension: 0.4,
-          fill: true
-        }
-      ]
+          fill: true,
+        },
+        {
+          label: "Youtube",
+          data: youtubeData,
+          borderColor: "#607c00",
+          backgroundColor: "rgba(138, 20, 30, 0.1)",
+          tension: 0.4,
+          fill: true,
+        },
+      ],
     };
-    
+
     // Cấu hình
     const config = {
-      type: 'line',
+      type: "line",
       data: data,
       options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
           legend: {
-            display: false
-          }
+            display: false,
+          },
         },
         scales: {
           x: {
             grid: {
               display: false,
-              color: darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+              color: darkMode
+                ? "rgba(255, 255, 255, 0.1)"
+                : "rgba(0, 0, 0, 0.1)",
             },
             ticks: {
-              color: darkMode ? '#adb5bd' : '#6c757d'
-            }
+              color: darkMode ? "#adb5bd" : "#6c757d",
+            },
           },
           y: {
             grid: {
-              color: darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+              color: darkMode
+                ? "rgba(255, 255, 255, 0.1)"
+                : "rgba(0, 0, 0, 0.1)",
             },
             ticks: {
-              color: darkMode ? '#adb5bd' : '#6c757d'
-            }
-          }
-        }
-      }
+              color: darkMode ? "#adb5bd" : "#6c757d",
+            },
+          },
+        },
+      },
     };
-    
+
     // Tạo biểu đồ
     chartInstance.current = new Chart(ctx, config);
-    
+
     return () => {
       if (chartInstance.current) {
         chartInstance.current.destroy();
       }
     };
-  }, [darkMode]);
-  
+  }, [darkMode, isLoading, error]);
+
   return (
     <div className="chart-container">
       <canvas ref={chartRef}></canvas>
       <div className="chart-legend">
         <div className="legend-item">
-          <div className="legend-color" style={{ backgroundColor: '#4361ee' }}></div>
-          <span>Đã xử lý</span>
+          <div
+            className="legend-color"
+            style={{ backgroundColor: "#4361ee" }}
+          ></div>
+          <span>Facebook</span>
         </div>
         <div className="legend-item">
-          <div className="legend-color" style={{ backgroundColor: '#ff9f1c' }}></div>
-          <span>Đang xử lý</span>
+          <div
+            className="legend-color"
+            style={{ backgroundColor: "#ff9f1c" }}
+          ></div>
+          <span>Tiktok</span>
         </div>
         <div className="legend-item">
-          <div className="legend-color" style={{ backgroundColor: '#e63946' }}></div>
-          <span>Chưa xử lý</span>
+          <div
+            className="legend-color"
+            style={{ backgroundColor: "#e40946" }}
+          ></div>
+          <span>Threads</span>
+        </div>
+        <div className="legend-item">
+          <div
+            className="legend-color"
+            style={{ backgroundColor: "#607c00" }}
+          ></div>
+          <span>Youtube</span>
         </div>
       </div>
     </div>

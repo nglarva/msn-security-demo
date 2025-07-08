@@ -7,6 +7,6 @@ export const useDarkMode = () => {
   if (context === undefined) {
     throw new Error('useDarkMode must be used within a ThemeProvider');
   }
-  console.log(context)
+  //console.log(context)
   return context;
 };

@@ -3,7 +3,8 @@
   background: #fff;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  padding: 50px;
+  padding: 20px 20px 50px 20px;
+  padding-top: 10px;
   margin-bottom: var(--gap);
 }
 
